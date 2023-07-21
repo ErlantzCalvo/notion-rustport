@@ -73,19 +73,11 @@ fn get_db_id(envfile: EnvFile) -> Result<String, MainErrors> {
 
 }
 
-async fn get_db(notion_api: &NotionApi, db_id: String) -> Result<Database, MainErrors> {
-    let db = DatabaseId::from_str(&db_id);
-    if let Ok(db_id) = db {
-        let database_result = notion_api.get_database(db_id.as_id()).await;
-        if let Ok(database) = database_result {
-            Ok(database)
-        } else {
-            Err(MainErrors::DbGetError)
-        }
-    } else {
-        Err(MainErrors::DbIdNotFoundInEnv)
+async fn get_db(notion_api: &NotionApi, id: String) -> Result<Database, MainErrors> {
+    match DatabaseId::from_str(&id) {
+        Ok(db_id) => notion_api.get_database(db_id.as_id()).await.map_err(|err| MainErrors::NotionApiError(err)),
+        Err(_) => Err(MainErrors::DbIdNotFoundInEnv)
     }
-
 
 }
 
