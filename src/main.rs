@@ -47,28 +47,20 @@ async fn main() -> Result<(), MainErrors>{
 }
 
 fn load_envfile() -> Result<EnvFile, MainErrors>{
-    let envfile_result = EnvFile::new(&Path::new("./.env"));
-    if let Err(e) = envfile_result {
-        Err(MainErrors::EnvFileError(e))
-    } else {
-        Ok(envfile_result.unwrap())
-    }
-    
+    EnvFile::new(&Path::new("./.env")).map_err(|err| MainErrors::EnvFileError(err))
 }
 
 fn load_api_key(envfile: &EnvFile) -> Result<String, MainErrors> {
-    if let Some(api_key) =envfile.get("NOTION_API_KEY") {
-        Ok(api_key.to_string())
-    } else {
-        Err(MainErrors::ApiKeyNotFoundInEnv)
+    match envfile.get("NOTION_API_KEY") {
+        Some(api_key) => Ok(api_key.to_string()),
+        _ => Err(MainErrors::ApiKeyError)
     }
 }
 
 fn get_db_id(envfile: EnvFile) -> Result<String, MainErrors> {
-    if let Some(db_id) =envfile.get("NOTION_PAGE_ID") {
-        Ok(db_id.to_string())
-    } else {
-        Err(MainErrors::DbIdNotFoundInEnv)
+    match envfile.get("NOTION_PAGE_ID") {
+        Some(id) => Ok(id.to_string()),
+        _ => Err(MainErrors::DbIdNotFoundInEnv)
     }
 
 }
