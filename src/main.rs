@@ -53,7 +53,7 @@ fn load_envfile() -> Result<EnvFile, MainErrors>{
 fn load_api_key(envfile: &EnvFile) -> Result<String, MainErrors> {
     match envfile.get("NOTION_API_KEY") {
         Some(api_key) => Ok(api_key.to_string()),
-        _ => Err(MainErrors::ApiKeyError)
+        _ => Err(MainErrors::ApiKeyNotFoundInEnv)
     }
 }
 
@@ -107,18 +107,15 @@ async fn get_tasks_from_db(notion_api: &NotionApi, db: Database) -> Result<HashM
 }
 
 fn get_task_section_name(task: &Page) -> String{
-    if let Some(status) = task.properties.properties.get("Status") {
-        if let PropertyValue::Select { select, .. } = status.to_owned() {
-            if let Some(section_name) = select.unwrap().name {
-                section_name
+    match task.properties.properties.get("Status") {
+        Some(status) => {
+            if let PropertyValue::Select { select, .. } = status.to_owned() {
+                select.unwrap().name.unwrap_or(String::from(""))
             } else {
                 String::from("")
             }
-        } else {
-            String::from("")
-        }
-    } else {
-        String::from("")
+        },
+        _ => String::from("")
     }
 }
 
