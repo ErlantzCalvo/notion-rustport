@@ -89,16 +89,14 @@ async fn get_tasks_from_db(notion_api: &NotionApi, db: Database) -> Result<HashM
         //     })  
         // }
         // println!("------> {:?}", query_result.results()[4].properties.properties);
-        if let PropertyValue::Title { title, .. } = query_result.results()[0].properties.properties.get("Name").unwrap().to_owned() {
     
-        println!("------SECTION---> {}", get_task_section_name(&query_result.results()[0]));
-        println!("------TITLE--->{}", get_task_title(&query_result.results()[0]).unwrap());
-        // println!("--------->{:?}", get_task_todos(notion_api, &query_result.results()[0]).await);
+        println!("------SECTION---> {}", get_task_section_name(&query_result.results()[1]));
+        println!("------TITLE--->{}", get_task_title(&query_result.results()[1]).unwrap());
+        println!("-----TO DOs---->{:?}", get_task_todos(notion_api, &query_result.results()[1]).await);
 
             // let pageId = query_result.results()[0].id.clone();
             // let page = notion_api.get_page(pageId).await;
 
-           }
         Ok(tasks)
     } else {
         Err(MainErrors::DbGetError)
@@ -109,8 +107,8 @@ async fn get_tasks_from_db(notion_api: &NotionApi, db: Database) -> Result<HashM
 fn get_task_section_name(task: &Page) -> String{
     match task.properties.properties.get("Status") {
         Some(status) => {
-            if let PropertyValue::Select { select, .. } = status.to_owned() {
-                select.unwrap().name.unwrap_or(String::from(""))
+            if let PropertyValue::Select { select, .. } = status {
+                select.clone().unwrap().name.unwrap_or(String::from(""))
             } else {
                 String::from("")
             }
@@ -120,17 +118,16 @@ fn get_task_section_name(task: &Page) -> String{
 }
 
 fn get_task_title(task: &Page) -> Option<String>{
-    if let PropertyValue::Title { title, .. } = task.properties.properties.get("Name").unwrap().to_owned() {
+    if let PropertyValue::Title { title, .. } = task.properties.properties.get("Name").unwrap() {
         Some(title.get(0).unwrap().plain_text().to_string())
     } else {
         None
     }
 }
 
-async fn get_task_todos(notion_api: &NotionApi, task: &Page) -> Option<String> {
-    let block_children = get_page_block_children(notion_api, task);
-    println!("---------->{:?}", block_children.await);
-    Some(String::from(""))
+async fn get_task_todos(notion_api: &NotionApi, task: &Page) -> Vec<(String, bool)> {
+    let block_children = get_page_block_children(notion_api, task).await.unwrap();
+    get_block_todo_fields(block_children)
 }
 
 async fn get_page_block_children(notion_api: &NotionApi, task: &Page) -> Result<ListResponse<Block>, BlockErrors> {
@@ -139,4 +136,17 @@ async fn get_page_block_children(notion_api: &NotionApi, task: &Page) -> Result<
         Ok(id) => notion_api.get_block_children(id.as_id()).await.or(Err(BlockErrors::GetPageBlockError)),
         Err(_) => Err(BlockErrors::GetBlockIdError)
     }
+}
+
+fn get_block_todo_fields(blocks: ListResponse<Block>) -> Vec<(String, bool)> {
+    blocks.results()
+        .into_iter()
+        .filter(|b| matches!(b, Block::ToDo {..}))
+        .map(|td| {
+            match td {
+                Block::ToDo {to_do, ..} => (to_do.rich_text[0].plain_text().to_string(), to_do.checked),
+                _ => panic!("Strange ToDo not expected")
+            }
+        })
+        .collect::<Vec<(String, bool)>>()
 }
