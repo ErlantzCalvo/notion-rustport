@@ -1,3 +1,5 @@
+extern crate futures;
+
 use notion::ids::{DatabaseId, AsIdentifier};
 use notion::NotionApi;
 use envfile::EnvFile;
@@ -5,7 +7,9 @@ use notion::models::Block;
 use notion::models::{Database, Page, ListResponse};
 use notion::models::properties::PropertyValue;
 use std::collections::HashMap;
+use std::collections::hash_map::Entry;
 use std::{path::Path, str::FromStr};
+use futures::future::join_all;
 
 #[derive(Debug)]
 enum MainErrors {
@@ -25,8 +29,9 @@ enum BlockErrors {
 
 #[derive(Debug)]
 struct Task {
+    section: String,
     title: String,
-    sub_tasks: Vec<String>
+    sub_tasks: Vec<(String, bool)>
 }
 
 #[tokio::main]
@@ -38,7 +43,7 @@ async fn main() -> Result<(), MainErrors>{
         let db_id = get_db_id(envfile)?;
         let db = get_db(&notion_api, db_id).await?;
         let tasks = get_tasks_from_db(&notion_api, db).await?;
-        println!("---- TASKS --> {:?}", tasks);
+        generate_daily_report(tasks);
     } else {
         return Err(MainErrors::ApiKeyError);
     }
@@ -70,38 +75,33 @@ async fn get_db(notion_api: &NotionApi, id: String) -> Result<Database, MainErro
         Ok(db_id) => notion_api.get_database(db_id.as_id()).await.map_err(|err| MainErrors::NotionApiError(err)),
         Err(_) => Err(MainErrors::DbIdNotFoundInEnv)
     }
+}
+
+async fn get_tasks_from_db(notion_api: &NotionApi, db: Database) -> Result<HashMap<String, Vec<Task>>, MainErrors>{
+    let mut tasks: HashMap<String, Vec<Task> >= HashMap::new();
+    let query = notion::models::search::DatabaseQuery::default();
+   
+    let query_result = notion_api.query_database(db, query).await.unwrap();
+    let result_futures: Vec<_> = query_result.results()
+        .into_iter()
+        .map(|result| async {
+                let section = get_task_section_name(result);
+                let title = get_task_title(result).unwrap();
+                let sub_tasks = get_task_todos(notion_api, result).await;
+                Task {section, title, sub_tasks}
+        }).collect();
+    join_all(result_futures).await
+    .into_iter()
+    .for_each(|result| fill_tasks(&mut tasks, result));
+    Ok(tasks)
 
 }
 
-async fn get_tasks_from_db(notion_api: &NotionApi, db: Database) -> Result<HashMap<String, String>, MainErrors>{
-    let mut tasks = HashMap::new();
-    let query = notion::models::search::DatabaseQuery::default();
-
-    if let Ok(query_result) = notion_api.query_database(db, query).await {
-        // for i in 0..5 {
-        // // println!("--------->{:?}", query_result.results()[i].properties.title());
-        //     query_result
-        //         .results()
-        //         .iter()
-        //         .map(|task| {
-        //             let section_name = get_task_section_name(&task);
-        //             tasks.insert(task.properties., v)
-        //     })  
-        // }
-        // println!("------> {:?}", query_result.results()[4].properties.properties);
-    
-        println!("------SECTION---> {}", get_task_section_name(&query_result.results()[1]));
-        println!("------TITLE--->{}", get_task_title(&query_result.results()[1]).unwrap());
-        println!("-----TO DOs---->{:?}", get_task_todos(notion_api, &query_result.results()[1]).await);
-
-            // let pageId = query_result.results()[0].id.clone();
-            // let page = notion_api.get_page(pageId).await;
-
-        Ok(tasks)
-    } else {
-        Err(MainErrors::DbGetError)
-    }
-
+fn fill_tasks(tasks: &mut HashMap<String, Vec<Task>>, t: Task) {
+    match tasks.entry(t.section.clone()) {
+        Entry::Vacant(e) => { e.insert(vec![t]);},
+        Entry::Occupied(mut e) => {e.get_mut().push(t);}
+    };
 }
 
 fn get_task_section_name(task: &Page) -> String{
@@ -149,4 +149,27 @@ fn get_block_todo_fields(blocks: ListResponse<Block>) -> Vec<(String, bool)> {
             }
         })
         .collect::<Vec<(String, bool)>>()
+}
+
+fn generate_daily_report(tasks: HashMap<String, Vec<Task>>) {
+    let sections = vec!["Done 🙌", "Doing", "To Do"];
+    let mut report = String::from("");
+    for section in sections {
+        let section_tasks = tasks.get(section);
+        if let Some(t) = section_tasks {
+            generate_section_report(t, &mut report);
+        }
+    }
+    println!("------> OUTPUT: {}", report);
+}
+
+fn generate_section_report(tasks: &Vec<Task>, out: &mut String) {
+    tasks.into_iter().for_each(|task| {
+        let task_title = format!("{} ----------> Status\n", task.title);
+        // let sub_stask_text = String::from("");
+        // for st in task.sub_tasks {
+        //     
+        // }
+        out.push_str(&(task_title + "\n"));
+    })
 }

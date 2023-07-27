@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 envfile = "0.2.1"
+futures = "0.3.28"
 notion = "0.5.1"
 openssl = { version = "0.10", features = ["vendored"] }
 tokio = "1.29.1"
