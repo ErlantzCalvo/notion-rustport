@@ -1,0 +1,14 @@
+{
+    "TasksStatus": {
+        "PendingTasks":"To Do",
+        "DoingTasks":"Doing",
+        "FinishedTasks": "Done 🙌"
+    },
+    "Texts": {
+        "FinishedTasksStatus": "FINISHED",
+        "DoingTasksStatus": "IN PROGRESS",
+        "BeginningOfMessage": "My daily report today is as follows:\n",
+        "PendingTasksBeginning": "\nPending tasks:\n",
+        "Farewell": "\nRegards,"
+    }
+}
