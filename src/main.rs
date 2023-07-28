@@ -1,4 +1,5 @@
 extern crate futures;
+mod configure;
 
 use notion::ids::{DatabaseId, AsIdentifier};
 use notion::NotionApi;
@@ -17,7 +18,6 @@ enum MainErrors {
     ApiKeyNotFoundInEnv,
     ApiKeyError,
     DbIdNotFoundInEnv,
-    DbGetError,
     NotionApiError(notion::Error)
 }
 
@@ -36,6 +36,8 @@ struct Task {
 
 #[tokio::main]
 async fn main() -> Result<(), MainErrors>{
+    let config = configure::Configuration::load("./config.json");
+    println!("----- CONFIG --->{:?}", config);
     let envfile = load_envfile()?;
     let api_key = load_api_key(&envfile)?;
 
@@ -50,6 +52,7 @@ async fn main() -> Result<(), MainErrors>{
 
     Ok(())
 }
+
 
 fn load_envfile() -> Result<EnvFile, MainErrors>{
     EnvFile::new(&Path::new("./.env")).map_err(|err| MainErrors::EnvFileError(err))
@@ -152,24 +155,28 @@ fn get_block_todo_fields(blocks: ListResponse<Block>) -> Vec<(String, bool)> {
 }
 
 fn generate_daily_report(tasks: HashMap<String, Vec<Task>>) {
-    let sections = vec!["Done 🙌", "Doing", "To Do"];
+    let sections = vec!["Done 🙌", "Doing"];
     let mut report = String::from("");
+    let mut start_idx = 1;
     for section in sections {
         let section_tasks = tasks.get(section);
         if let Some(t) = section_tasks {
-            generate_section_report(t, &mut report);
+            generate_section_report(t, &mut report, start_idx);
+            start_idx += t.len();
         }
     }
     println!("------> OUTPUT: {}", report);
 }
 
-fn generate_section_report(tasks: &Vec<Task>, out: &mut String) {
-    tasks.into_iter().for_each(|task| {
-        let task_title = format!("{} ----------> Status\n", task.title);
-        // let sub_stask_text = String::from("");
-        // for st in task.sub_tasks {
-        //     
-        // }
+fn generate_section_report(tasks: &Vec<Task>, out: &mut String, start_idx: usize) {
+    tasks.iter().enumerate().for_each(|(idx, task)| {
+        let mut task_title = format!("{}) {} ----------> Status\n", idx + start_idx, task.title);
+        let mut sub_stask_text = String::from("");
+        for st in &task.sub_tasks {
+            let text = format!("\t- {} ---------> {}\n", st.0, st.1);
+            sub_stask_text.push_str(&text);   
+        }
+        task_title.push_str(&sub_stask_text);
         out.push_str(&(task_title + "\n"));
     })
 }
