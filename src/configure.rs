@@ -6,27 +6,27 @@ use serde_json;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct TasksStatus {
-        pending_tasks: String,
-        doing_tasks: String,
-        finished_tasks: String
+        pub pending_tasks: String,
+        pub doing_tasks: String,
+        pub finished_tasks: String
     }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
  pub struct Texts {
-        finished_tasks_status: String,
-        doing_tasks_status: String,
-        beginning_of_message: String,
-        pending_tasks_beginning: String,
-        farewell: String
+        pub finished_tasks_status: String,
+        pub doing_tasks_status: String,
+        pub beginning_of_message: String,
+        pub pending_tasks_beginning: String,
+        pub farewell: String
 
     }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct Configuration {
-    texts: Texts,
-    tasks_status: TasksStatus
+    pub texts: Texts,
+    pub tasks_status: TasksStatus
 }
 
 impl Configuration {
