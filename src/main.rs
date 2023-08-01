@@ -15,6 +15,7 @@ use futures::future::join_all;
 #[derive(Debug)]
 enum MainErrors {
     EnvFileError(std::io::Error),
+    ConfigFileError(std::io::Error),
     ApiKeyNotFoundInEnv,
     ApiKeyError,
     DbIdNotFoundInEnv,
@@ -36,7 +37,7 @@ struct Task {
 
 #[tokio::main]
 async fn main() -> Result<(), MainErrors>{
-    let config = configure::Configuration::load("./config.json");
+    let config = configure::Configuration::load("./config.json").map_err(MainErrors::ConfigFileError)?;
     println!("----- CONFIG --->{:?}", config);
     let envfile = load_envfile()?;
     let api_key = load_api_key(&envfile)?;
