@@ -3,7 +3,7 @@ use std::{path::Path, fs::File, io::BufReader};
 use serde::{Deserialize, Serialize};
 use serde_json;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "PascalCase")]
 pub struct TasksStatus {
         pub pending_tasks: String,
