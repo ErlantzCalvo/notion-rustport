@@ -18,7 +18,7 @@ pub async fn get_tasks_from_db(notion_api: &NotionApi, db: Database) -> Result<H
    
     let query_result = notion_api.query_database(db, query).await.unwrap();
     let result_futures: Vec<_> = query_result.results()
-        .into_iter()
+        .iter()
         .map(|result| async {
                 let section = get_task_section_name(result);
                 let title = get_task_title(result).unwrap();

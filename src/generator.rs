@@ -37,7 +37,7 @@ impl ReportGenerator {
     }
 
 
-    fn add_current_tasks_report(&self, tasks: &Vec<Task>, status_text: &str, out: &mut String, start_idx: usize) {
+    fn add_current_tasks_report(&self, tasks: &[Task], status_text: &str, out: &mut String, start_idx: usize) {
         tasks.iter().enumerate().for_each(|(idx, task)| {
             let mut task_title = format!("{}) {} → {}\n", idx + start_idx, task.title, status_text);
             let mut sub_stask_text = String::from("");
@@ -52,7 +52,7 @@ impl ReportGenerator {
         })
     }
 
-    fn add_pending_tasks(&self, pending_tasks: &Vec<Task>, out: &mut String) {
+    fn add_pending_tasks(&self, pending_tasks: &[Task], out: &mut String) {
         out.push_str(&self.config.texts.pending_tasks_beginning);
         pending_tasks.iter().for_each(|task| {
             let pending_text = format!("- {}\n", task.title);

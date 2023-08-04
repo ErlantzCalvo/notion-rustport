@@ -20,7 +20,7 @@ pub async fn get_page_block_children(notion_api: &NotionApi, task: &Page) -> Res
 
 pub fn get_block_todo_fields(blocks: ListResponse<Block>) -> Vec<(String, bool)> {
     blocks.results()
-        .into_iter()
+        .iter()
         .filter(|b| matches!(b, Block::ToDo {..}))
         .map(|td| {
             match td {

@@ -62,7 +62,7 @@ async fn main() -> Result<(), MainErrors>{
 }
 
 fn load_envfile() -> Result<EnvFile, MainErrors>{
-    EnvFile::new(&Path::new("./.env")).map_err(MainErrors::EnvFileError)
+    EnvFile::new(Path::new("./.env")).map_err(MainErrors::EnvFileError)
 }
 
 fn load_api_key(envfile: &EnvFile) -> Result<String, MainErrors> {
