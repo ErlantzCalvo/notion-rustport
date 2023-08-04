@@ -6,6 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+arboard = "3.2.0"
+clap = { version = "4.3.19", features = ["derive"] }
 envfile = "0.2.1"
 futures = "0.3.28"
 notion = "0.5.1"
