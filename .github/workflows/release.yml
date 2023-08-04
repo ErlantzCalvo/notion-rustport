@@ -27,6 +27,10 @@ jobs:
         uses: rust-build/rust-build.action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          RUSTTARGET: ${{ matrix.target }}
+          EXTRA_FILES: "config.json .env"
+          ARCHIVE_TYPES: ${{ matrix.archive }}
   release_without_not_required:
     name: release ${{ matrix.target }}
     runs-on: ubuntu-latest
