@@ -2,20 +2,20 @@ use std::collections::HashMap;
 
 use crate::{configure::Configuration, task::Task};
 
-pub struct Generator {
+pub struct ReportGenerator {
     config: Configuration
 }
 
-impl From<Configuration> for Generator {
+impl From<Configuration> for ReportGenerator {
     fn from(config: Configuration) -> Self {
         Self { config }
     }
 
 }
 
-impl Generator {
+impl ReportGenerator {
     pub fn generate_from_tasks(&self, tasks: HashMap<String, Vec<Task>>) -> String {
-        let mut report = String::from("");
+        let mut report = String::from(&self.config.texts.beginning_of_message);
         let mut task_start_index: usize = 1;
 
         if let Some(finished_tasks) = tasks.get(&self.config.tasks_status.finished_tasks) {
@@ -27,7 +27,11 @@ impl Generator {
             self.add_current_tasks_report(doing_tasks, &self.config.texts.doing_tasks_status, &mut report, task_start_index);
         }
 
-        println!("------> OUTPUT: {}", report);
+        if let Some(pending_tasks) = tasks.get(&self.config.tasks_status.pending_tasks) {
+            self.add_pending_tasks(pending_tasks, &mut report);
+        }
+
+        report.push_str(&self.config.texts.farewell);
 
         report
     }
@@ -46,6 +50,14 @@ impl Generator {
             task_title.push_str(&sub_stask_text);
             out.push_str(&(task_title + "\n"));
         })
+    }
+
+    fn add_pending_tasks(&self, pending_tasks: &Vec<Task>, out: &mut String) {
+        out.push_str(&self.config.texts.pending_tasks_beginning);
+        pending_tasks.iter().for_each(|task| {
+            let pending_text = format!("- {}\n", task.title);
+            out.push_str(&pending_text);
+        });
     }
 }
 
