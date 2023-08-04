@@ -10,4 +10,6 @@ envfile = "0.2.1"
 futures = "0.3.28"
 notion = "0.5.1"
 openssl = { version = "0.10", features = ["vendored"] }
+serde = "1.0.177"
+serde_json = "1.0.104"
 tokio = "1.29.1"
