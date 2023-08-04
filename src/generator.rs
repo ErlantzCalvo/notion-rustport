@@ -43,7 +43,7 @@ impl ReportGenerator {
             let mut sub_stask_text = String::from("");
             for st in &task.sub_tasks {
                 let status = if st.1 {&self.config.texts.finished_tasks_status} else {&self.config.texts.doing_tasks_status};
-                let text = format!("\t- {} →  {}\n", st.0, status);
+                let text = format!("    - {} →  {}\n", st.0, status);
                 sub_stask_text.push_str(&text);   
             }
 
