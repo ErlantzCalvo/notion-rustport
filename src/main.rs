@@ -32,8 +32,10 @@ async fn main() -> Result<(), MainErrors>{
         let db = get_db(&notion_api, db_id).await?;
         let tasks = get_tasks_from_db(&notion_api, db).await.map_err(MainErrors::NotionApiError)?;
         
-        let report_generator = generator::Generator::from(config);
-        report_generator.generate_from_tasks(tasks);
+        let report_generator = generator::ReportGenerator::from(config);
+        let report = report_generator.generate_from_tasks(tasks);
+
+        println!("{}", report);
     } else {
         return Err(MainErrors::ApiKeyError);
     }
@@ -46,18 +48,11 @@ fn load_envfile() -> Result<EnvFile, MainErrors>{
 }
 
 fn load_api_key(envfile: &EnvFile) -> Result<String, MainErrors> {
-    match envfile.get("NOTION_API_KEY") {
-        Some(api_key) => Ok(api_key.to_string()),
-        _ => Err(MainErrors::ApiKeyNotFoundInEnv)
-    }
+    envfile.get("NOTION_API_KEY").map(|key| key.to_string()).ok_or(MainErrors::ApiKeyNotFoundInEnv)
 }
 
 fn get_db_id(envfile: EnvFile) -> Result<String, MainErrors> {
-    match envfile.get("NOTION_PAGE_ID") {
-        Some(id) => Ok(id.to_string()),
-        _ => Err(MainErrors::DbIdNotFoundInEnv)
-    }
-
+    envfile.get("NOTION_PAGE_ID").map(|id| id.to_string()).ok_or(MainErrors::DbIdNotFoundInEnv)
 }
 
 async fn get_db(notion_api: &NotionApi, id: String) -> Result<Database, MainErrors> {
