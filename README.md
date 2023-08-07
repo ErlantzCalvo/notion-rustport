@@ -2,7 +2,7 @@
 Create daily reports automatically from your Notion task page. Project aimed to reduce the workload when making the daily work report.
 This project achieves the same goal as [DailyReportCreator](https://github.com/ErlantzCalvo/DailyReportCreator), but this one is made using Rust.
 
-
+Disclaimer: If you are a rustacean, feel free to insult me for the poor quality of the code.
 # Example
 Having the following Notion Scrum-like ToDo page
 ![Notion To do page](https://github.com/ErlantzCalvo/DailyReportCreator/blob/main/media/notion_example.png?raw=true)
@@ -16,7 +16,7 @@ You can download the binaries in the [Releases](https://github.com/ErlantzCalvo/
 
 Once you have downloaded the binaries, you have to fill the <i>.env</i> file with your Notion settings ([Setup section](https://github.com/ErlantzCalvo/DailyReportCreator#setup)) and modify the config.json file in order to change the output format if wanted.
 
-Once these things are done, run the binary as follows:
+Once these things are done, and with the right permissions, run the binary as follows:
 `./notion-rustport`
 
 <b>Note:</b> You can check the usage using `./notion-rustport -h` or `./notion-rustport --help`;
