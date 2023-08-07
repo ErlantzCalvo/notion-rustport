@@ -12,9 +12,9 @@ This project creates the following report:
 <img src="https://github.com/ErlantzCalvo/DailyReportCreator/blob/main/media/output_example.png?raw=true" alt="Generated report" width="700"/>
 
 # Usage
-You can download the binaries in the [Releases](https://github.com/ErlantzCalvo/notion-rustport/releases) section or install it manually following the [Installation section](https://github.com/ErlantzCalvo/DailyReportCreator#installation).
+You can download the binaries in the [Releases](https://github.com/ErlantzCalvo/notion-rustport/releases) section or install it manually following the [Installation section](https://github.com/ErlantzCalvo/notion-rustport#installation).
 
-Once you have downloaded the binaries, you have to fill the <i>.env</i> file with your Notion settings ([Setup section](https://github.com/ErlantzCalvo/DailyReportCreator#setup)) and modify the config.json file in order to change the output format if wanted.
+Once you have downloaded the binaries, you have to fill the <i>.env</i> file with your Notion settings ([Setup section](https://github.com/ErlantzCalvo/notion-rustport#setup)) and modify the config.json file in order to change the output format if wanted.
 
 Once these things are done, and with the right permissions, run the binary as follows:
 `./notion-rustport`
