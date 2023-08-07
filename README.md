@@ -1,6 +1,6 @@
 # notion-rustport
 Create daily reports automatically from your Notion task page. Project aimed to reduce the workload when making the daily work report.
-This project achieves the same goal as [DailyReportCreator](https://github.com/ErlantzCalvo/DailyReportCreator), but this one is made using Rust and the Rust Notion API client (made by jakeswenson)[https://github.com/jakeswenson/notion].
+This project achieves the same goal as [DailyReportCreator](https://github.com/ErlantzCalvo/DailyReportCreator), but this one is made using Rust and the Rust Notion API client [made by jakeswenson](https://github.com/jakeswenson/notion).
 
 Disclaimer: If you are a rustacean, feel free to insult me for the poor quality of the code.
 # Example
