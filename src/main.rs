@@ -56,7 +56,7 @@ async fn main() -> Result<(), MainErrors>{
 
         Ok(())
     } else {
-        Err(MainErrors::ApiKeyError);
+        Err(MainErrors::ApiKeyError)
     }
 
 }
