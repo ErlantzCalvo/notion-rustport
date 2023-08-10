@@ -54,11 +54,11 @@ async fn main() -> Result<(), MainErrors>{
             copy_to_clipboard(report)?;
         }
 
+        Ok(())
     } else {
-        return Err(MainErrors::ApiKeyError);
+        Err(MainErrors::ApiKeyError);
     }
 
-    Ok(())
 }
 
 fn load_envfile() -> Result<EnvFile, MainErrors>{
