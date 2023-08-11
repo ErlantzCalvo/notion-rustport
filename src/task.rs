@@ -44,6 +44,8 @@ fn get_task_section_name(task: &Page) -> String{
         Some(status) => {
             if let PropertyValue::Select { select, .. } = status {
                 select.clone().unwrap().name.unwrap_or(String::from(""))
+            } else if let PropertyValue::Status { status, .. } = status {
+                status.clone().unwrap().name.unwrap_or(String::from(""))
             } else {
                 String::from("")
             }
