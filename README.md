@@ -51,12 +51,12 @@ Once you have the ID of the page you want to track, place it in the `.env` file,
   
   
 # Configuration
-The app need to know which is the title for each status. This is, in the picture of the notion page (At the top of this README) it can be seen that the 3 status names are *To Do, Doing* and *Done 🙌*. This three names must be put in the `config.json` file:
+The app need to know which is the title for each status os tasks sections. This is, in the picture of the notion page (At the top of this README) it can be seen that the 3 status names are *Not started, In progress* and *Done*. This three names must be put in the `config.json` file:
 ```
   "TasksStatus": {
-        "PendingTasks":"To Do",
-        "DoingTasks":"Doing",
-        "FinishedTasks": "Done 🙌"
+        "PendingTasks":"Not started",
+        "DoingTasks":"In progress",
+        "FinishedTasks": "Done"
     }
 ```
 
