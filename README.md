@@ -6,11 +6,11 @@ This project achieves the same goal as [DailyReportCreator](https://github.com/E
 <i>Disclaimer:</i> If you are a rustacean, feel free to insult me for the poor quality of the code.
 # Example
 Having the following Notion Scrum-like ToDo page
-![Notion To do page](https://github.com/ErlantzCalvo/DailyReportCreator/blob/main/media/notion_example.png?raw=true)
+![Notion To do page](https://github.com/ErlantzCalvo/notion-rustport/blob/main/media/notion_example.png?raw=true)
 
 This project creates the following report:
 
-<img src="https://github.com/ErlantzCalvo/DailyReportCreator/blob/main/media/output_example.png?raw=true" alt="Generated report" width="700"/>
+<img src="https://github.com/ErlantzCalvo/notion-rustport/blob/main/media/output_example.png?raw=true" alt="Generated report" width="700"/>
 
 # Usage
 You can download the binaries in the [Releases](https://github.com/ErlantzCalvo/notion-rustport/releases) section or install it manually following the [Installation section](https://github.com/ErlantzCalvo/notion-rustport#installation).
