@@ -4,7 +4,7 @@ use notion_daily_rustport::{configure, task::Task, generator};
 
 #[test]
 fn load_config() {
-    let config = configure::Configuration::load("tests/test_files/config.json").unwrap();
+    let config = configure::Configuration::load("tests/test_files/config_test.json").unwrap();
     assert_eq!(config.tasks_status.doing_tasks.clone(), "doing test".to_string());
     assert_eq!(config.tasks_status.finished_tasks.clone(), "done test".to_string());
     assert_eq!(config.tasks_status.pending_tasks, "pending test".to_string());
@@ -17,7 +17,7 @@ fn load_config() {
 
 #[test]
 fn generate_report() {
-    let config = configure::Configuration::load("tests/test_files/config.json").unwrap();
+    let config = configure::Configuration::load("tests/test_files/config_test.json").unwrap();
     let mut tasks: HashMap<String, Vec<Task>> = HashMap::new();
     tasks.insert("done test".to_string(), vec![Task {title: "Finished".to_string(), section: "done test".to_string(), sub_tasks: vec![("subtask".to_string(), true)]}]);
     tasks.insert("doing test".to_string(), vec![Task {title: "Doing".to_string(), section: "doing test".to_string(), sub_tasks: vec![]}]);

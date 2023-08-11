@@ -1,0 +1,14 @@
+{
+    "TasksStatus": {
+        "PendingTasks":"pending test",
+        "DoingTasks":"doing test",
+        "FinishedTasks": "done test"
+    }, 
+    "Texts": {
+        "FinishedTasksStatus": "text 1",
+        "DoingTasksStatus": "text 2",
+        "BeginningOfMessage": "text 3",
+        "PendingTasksBeginning": "text 4",
+        "Farewell": "text 5"
+    }
+}
